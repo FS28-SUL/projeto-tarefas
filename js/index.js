@@ -24,3 +24,32 @@ function fecharGaveta(){
     sombra.classList.add("invisible", "opacity-0");
     gaveta.classList.add("invisible", "opacity-0");
 }
+
+function buscarTarefas(){
+    fetch("http://localhost:3000/tarefas")
+    .then(resposta => resposta.json())
+    .then(json => {
+        carregarTarefas(json);
+    })
+}
+
+buscarTarefas()
+
+function carregarTarefas(tarefas){
+    const listaDeTarefas = document.querySelector("#lista-de-tarefas");
+    tarefas.map(tarefa => {
+        listaDeTarefas.innerHTML += `
+            <div class="bg-white shadow rounded p-4">
+                <h3 class="font-bold">${tarefa.titulo}</h3>
+                <p class="text-[14px] text-gray-500 line-clamp-3 mb-4">${tarefa.descricao}</p>
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-[10px]">${tarefa.data}</span>
+                    <div class="flex gap-3">
+                        <box-icon name='pencil' ></box-icon>
+                        <box-icon name='trash'></box-icon>
+                    </div>
+                </div>
+            </div>
+        `;
+    })
+}
