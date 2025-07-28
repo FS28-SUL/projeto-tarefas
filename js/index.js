@@ -46,10 +46,35 @@ function carregarTarefas(tarefas){
                     <span class="font-bold text-[10px]">${tarefa.data}</span>
                     <div class="flex gap-3">
                         <box-icon name='pencil' ></box-icon>
-                        <box-icon name='trash'></box-icon>
+                        <box-icon name='trash' onclick="deletarTarefa(${tarefa.id})"></box-icon>
                     </div>
                 </div>
             </div>
         `;
     })
+}
+
+function criarTarefa(){
+    event.preventDefault();
+
+    fetch("http://localhost:3000/tarefas", {
+        method: "post",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(capturarDados("#formCriar"))
+    })
+}
+
+function deletarTarefa(idDaTarefa){
+    fetch(`http://localhost:3000/tarefas/${idDaTarefa}`, {
+        method: "delete",
+    })
+}
+
+function capturarDados(idDeUmFormulario){
+    let form = document.querySelector(idDeUmFormulario);
+    let formData = new FormData(form);
+    let dados = Object.fromEntries(formData.entries())
+    return dados;
 }
