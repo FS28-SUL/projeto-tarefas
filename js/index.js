@@ -33,7 +33,7 @@ function buscarTarefas(){
     })
 }
 
-buscarTarefas()
+buscarTarefas();
 
 function carregarTarefas(tarefas){
     const listaDeTarefas = document.querySelector("#lista-de-tarefas");
@@ -43,7 +43,7 @@ function carregarTarefas(tarefas){
                 <h3 class="font-bold">${tarefa.titulo}</h3>
                 <p class="text-[14px] text-gray-500 line-clamp-3 mb-4">${tarefa.descricao}</p>
                 <div class="flex justify-between items-center">
-                    <span class="font-bold text-[10px]">${tarefa.data}</span>
+                    <span class="font-bold text-[10px]">${formatarData(tarefa.data)}</span>
                     <div class="flex gap-3">
                         <box-icon name='pencil' ></box-icon>
                         <box-icon name='trash' onclick="deletarTarefa(${tarefa.id})"></box-icon>
@@ -67,14 +67,24 @@ function criarTarefa(){
 }
 
 function deletarTarefa(idDaTarefa){
-    fetch(`http://localhost:3000/tarefas/${idDaTarefa}`, {
-        method: "delete",
-    })
+    let confirmou = confirm("Deseja realmente apagar este item?");
+    if(confirmou){
+        fetch(`http://localhost:3000/tarefas/${idDaTarefa}`, {
+            method: "delete",
+        })
+    }
 }
 
 function capturarDados(idDeUmFormulario){
     let form = document.querySelector(idDeUmFormulario);
     let formData = new FormData(form);
     let dados = Object.fromEntries(formData.entries())
+    let data = new Date();
+    dados.data = data.toLocaleDateString().split('/').reverse().join('-');
     return dados;
+}
+
+function formatarData(data){
+    let dataFormatada = new Date(data);
+    return dataFormatada.toLocaleDateString();
 }
