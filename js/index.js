@@ -1,3 +1,4 @@
+let lista = []
 function mudarTema(){
     const header = document.querySelector("#header");
     if(header.classList.contains("bg-white")){
@@ -9,9 +10,19 @@ function mudarTema(){
     }
 }
 
-function abrirGaveta(){
+function abrirGaveta(editar = false){
     const sombra = document.querySelector("#sombra");
     const gaveta = document.querySelector("#gaveta");
+    const formCriar = document.querySelector("#formCriar");
+    const formEditar = document.querySelector("#formEditar");
+
+    if(editar){
+        formCriar.classList.add("hidden");
+        formEditar.classList.remove("hidden");
+    }else{
+        formEditar.classList.add("hidden");
+        formCriar.classList.remove("hidden");
+    }
 
     sombra.classList.remove("invisible", "opacity-0");
     gaveta.classList.remove("invisible", "opacity-0");
@@ -29,6 +40,7 @@ function buscarTarefas(){
     fetch("http://localhost:3000/tarefas")
     .then(resposta => resposta.json())
     .then(json => {
+        lista = json;
         carregarTarefas(json);
     })
 }
@@ -45,7 +57,7 @@ function carregarTarefas(tarefas){
                 <div class="flex justify-between items-center">
                     <span class="font-bold text-[10px]">${formatarData(tarefa.data)}</span>
                     <div class="flex gap-3">
-                        <box-icon name='pencil' ></box-icon>
+                        <box-icon name='pencil' onclick="abrirGaveta(true), preencherFormulario(${tarefa.id})"></box-icon>
                         <box-icon name='trash' onclick="deletarTarefa(${tarefa.id})"></box-icon>
                     </div>
                 </div>
@@ -63,6 +75,18 @@ function criarTarefa(){
             "Content-type": "application/json"
         },
         body: JSON.stringify(capturarDados("#formCriar"))
+    })
+}
+
+function editarTarefa(){
+    event.preventDefault();
+    const id = document.querySelector("#formEditar input[name='tarefa_id']").value;
+    fetch(`http://localhost:3000/tarefas/${id}`, {
+        method: "put",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(capturarDados("#formEditar"))
     })
 }
 
@@ -87,4 +111,15 @@ function capturarDados(idDeUmFormulario){
 function formatarData(data){
     let dataFormatada = new Date(data);
     return dataFormatada.toLocaleDateString();
+}
+
+function preencherFormulario(idDaTarefa){
+    let idValue = document.querySelector("#formEditar input[name='tarefa_id']");
+    let tituloValue = document.querySelector("#formEditar input[name='titulo']");
+    let descricaoValue = document.querySelector("#formEditar textarea[name='descricao']");
+    let tarefa = lista.find(item => item.id == idDaTarefa);
+    
+    idValue.value = tarefa.id;
+    tituloValue.value = tarefa.titulo;
+    descricaoValue.value = tarefa.descricao;
 }
