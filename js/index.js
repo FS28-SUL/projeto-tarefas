@@ -1,25 +1,31 @@
 let lista = []
-function mudarTema(){
-    const header = document.querySelector("#header");
-    if(header.classList.contains("bg-white")){
-        header.classList.remove("bg-white", "text-black", "fill-black");
-        header.classList.add("bg-black", "text-white", "fill-white");
+function mudarTema() {
+    const html = document.querySelector("#root");
+    if (html.classList.contains("dark")) {
+        html.classList.remove("dark");
     }else{
-        header.classList.remove("bg-black", "text-white", "fill-white");
-        header.classList.add("bg-white", "text-black", "fill-black");
+        html.classList.add("dark");
     }
+    // const header = document.querySelector("#header");
+    // if (header.classList.contains("bg-white")) {
+    //     header.classList.remove("bg-white", "text-black", "fill-black");
+    //     header.classList.add("bg-black", "text-white", "fill-white");
+    // } else {
+    //     header.classList.remove("bg-black", "text-white", "fill-white");
+    //     header.classList.add("bg-white", "text-black", "fill-black");
+    // }
 }
 
-function abrirGaveta(editar = false){
+function abrirGaveta(editar = false) {
     const sombra = document.querySelector("#sombra");
     const gaveta = document.querySelector("#gaveta");
     const formCriar = document.querySelector("#formCriar");
     const formEditar = document.querySelector("#formEditar");
 
-    if(editar){
+    if (editar) {
         formCriar.classList.add("hidden");
         formEditar.classList.remove("hidden");
-    }else{
+    } else {
         formEditar.classList.add("hidden");
         formCriar.classList.remove("hidden");
     }
@@ -28,7 +34,7 @@ function abrirGaveta(editar = false){
     gaveta.classList.remove("invisible", "opacity-0");
 }
 
-function fecharGaveta(){
+function fecharGaveta() {
     const sombra = document.querySelector("#sombra");
     const gaveta = document.querySelector("#gaveta");
 
@@ -36,19 +42,20 @@ function fecharGaveta(){
     gaveta.classList.add("invisible", "opacity-0");
 }
 
-function buscarTarefas(){
+function buscarTarefas() {
     fetch("http://localhost:3000/tarefas")
-    .then(resposta => resposta.json())
-    .then(json => {
-        lista = json;
-        carregarTarefas(json);
-    })
+        .then(resposta => resposta.json())
+        .then(json => {
+            lista = json;
+            carregarTarefas(json);
+        })
 }
 
 buscarTarefas();
 
-function carregarTarefas(tarefas){
+function carregarTarefas(tarefas) {
     const listaDeTarefas = document.querySelector("#lista-de-tarefas");
+    listaDeTarefas.innerHTML = '';
     tarefas.map(tarefa => {
         listaDeTarefas.innerHTML += `
             <div class="bg-white shadow rounded p-4">
@@ -66,7 +73,7 @@ function carregarTarefas(tarefas){
     })
 }
 
-function criarTarefa(){
+function criarTarefa() {
     event.preventDefault();
 
     fetch("http://localhost:3000/tarefas", {
@@ -78,7 +85,7 @@ function criarTarefa(){
     })
 }
 
-function editarTarefa(){
+function editarTarefa() {
     event.preventDefault();
     const id = document.querySelector("#formEditar input[name='tarefa_id']").value;
     fetch(`http://localhost:3000/tarefas/${id}`, {
@@ -90,16 +97,16 @@ function editarTarefa(){
     })
 }
 
-function deletarTarefa(idDaTarefa){
+function deletarTarefa(idDaTarefa) {
     let confirmou = confirm("Deseja realmente apagar este item?");
-    if(confirmou){
+    if (confirmou) {
         fetch(`http://localhost:3000/tarefas/${idDaTarefa}`, {
             method: "delete",
         })
     }
 }
 
-function capturarDados(idDeUmFormulario){
+function capturarDados(idDeUmFormulario) {
     let form = document.querySelector(idDeUmFormulario);
     let formData = new FormData(form);
     let dados = Object.fromEntries(formData.entries())
@@ -108,18 +115,23 @@ function capturarDados(idDeUmFormulario){
     return dados;
 }
 
-function formatarData(data){
+function formatarData(data) {
     let dataFormatada = new Date(data);
     return dataFormatada.toLocaleDateString();
 }
 
-function preencherFormulario(idDaTarefa){
+function preencherFormulario(idDaTarefa) {
     let idValue = document.querySelector("#formEditar input[name='tarefa_id']");
     let tituloValue = document.querySelector("#formEditar input[name='titulo']");
     let descricaoValue = document.querySelector("#formEditar textarea[name='descricao']");
     let tarefa = lista.find(item => item.id == idDaTarefa);
-    
+
     idValue.value = tarefa.id;
     tituloValue.value = tarefa.titulo;
     descricaoValue.value = tarefa.descricao;
+}
+
+function pesquisar(palavra) {
+    let tarefasFiltradas = lista.filter((tarefa) => tarefa.titulo.toLowerCase().includes(palavra.toLowerCase()));
+    carregarTarefas(tarefasFiltradas);
 }

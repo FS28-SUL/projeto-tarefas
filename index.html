@@ -1,20 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" id="root" class="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tarefas</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @custom-variant dark (&:where(.dark, .dark *));
+        @theme{
+            --color-verde: #7CFFB0;
+        }
+    </style>
 </head>
 
-<body class="bg-black/5">
-    <header id="header" class="bg-white shadow-lg flex justify-between items-center px-[60px] py-4 duration-150">
+<body class="bg-black/5 dark:bg-black/95 duration-150">
+    <header id="header" class="bg-white dark:bg-black shadow-lg flex justify-between items-center px-[60px] py-4 duration-150">
         <div class="flex items-center gap-[70px]">
-            <h1 class="font-bold text-[26px]">Tarefas</h1>
-            <input class="bg-black/5 w-[500px] h-[46px] rounded pl-4" type="text" placeholder="Pesquisar">
+            <h1 class="font-bold text-[26px] dark:text-white">Tarefas</h1>
+            <input onkeyup="pesquisar(event.target.value)" class="bg-black/5 w-[500px] h-[46px] rounded pl-4 dark:bg-white/5 dark:placeholder-white/50 dark:text-white" type="text" placeholder="Pesquisar">
         </div>
-        <box-icon type='solid' name='moon' class="duration-150" onclick="mudarTema()"></box-icon>
+        <box-icon type='solid' name='moon' class="duration-150 dark:hidden" onclick="mudarTema()"></box-icon>
+        <box-icon type='solid' name='sun' class="fill-verde duration-150 hidden dark:block" onclick="mudarTema()"></box-icon>
     </header>
 
     <div class="px-[60px] pt-[60px]">
@@ -22,8 +29,8 @@
             <h2 class="font-bold text-[36px] text-black/50">Tarefas</h2>
             <button
                 onclick="abrirGaveta()"
-                class="h-[46px] flex gap-4 items-center bg-black rounded px-4 text-white fill-white uppercase font-bold text-[12px]">
-                <box-icon type='solid' name='plus-circle'></box-icon>
+                class="h-[46px] flex gap-4 items-center bg-black dark:bg-verde dark:text-black duration-150 rounded px-4 text-white fill-white uppercase font-bold text-[12px]">
+                <box-icon type='solid' name='plus-circle' class="dark:fill-black duration-150"></box-icon>
                 Nova tarefa
             </button>
         </div>
